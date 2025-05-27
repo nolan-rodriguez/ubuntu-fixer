@@ -1,7 +1,7 @@
 # Ubuntu-Fixer
 This repository has a variety of bash scripts that will "fix" Ubuntu, removing all traces of Snap and the Snap Store, and replacing it with Flatpak and Gnome Software (or KDE Discover).
 
-# NOTE THAT Ubuntu-Fixer.sh IS UNTESTED AS OF NOW, THIS LINE WILL BE REMOVED ONCE IT IS CONFIRMED WORKING!!!
+NOTE THAT Ubuntu-Fixer.sh IS UNTESTED AS OF NOW, THIS LINE WILL BE REMOVED ONCE IT IS CONFIRMED WORKING!!!
 
 ### What's Coming
 I am still yet to make scripts for the Ubuntu flavors, however, those shouldn't bee too hard to add because they will be very similar to (and possibly the same as), the Ubuntu script.
