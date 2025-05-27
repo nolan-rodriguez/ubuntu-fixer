@@ -49,18 +49,24 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 
 # Ask if the User wants to Reboot now or later
 while true; do
-    # Prompt the user for input
-    read -p 'Do you want to reboot now or later? [now/later]: ' response
+    # Warning Prompt
+    read -p 'Do you want to reboot? [Y/n]: ' reboot_response
+
+    # Default to "y" if the user just presses Enter
+    if [[ -z "$reboot_response" ]]; then
+        reboot_response="y"
+    fi
 
     # Check the user's response
-    if [[ "$response" == "now" || "$response" == "Now" ]]; then
-        echo "Rebooting now..."
+    if [[ "$reboot_response" == "y" || "$reboot_response" == "Y" ]]; then
+        echo 'Rebooting...'
         sudo reboot
-        break  # Exit the loop after rebooting
-    elif [[ "$response" == "later" || "$response" == "Later" ]]; then
-        echo "Please save your work and reboot soon."
-        break  # Exit the loop after acknowledging the choice
+        break  # Exit the loop after proceeding
+    elif [[ "$reboot_response" == "n" || "$reboot_response" == "N" ]]; then
+        echo "Please reboot soon."
+        exit  # Exit the script
     else
-        echo 'Invalid response. Please enter "now" or "later".'
+        echo 'Invalid response. Please enter "y" for yes or "n" for no.'
+        # The loop will continue, prompting the user again
     fi
 done
