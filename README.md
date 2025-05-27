@@ -9,4 +9,6 @@ The goal of this script is to avoid throwing the baby out with the bathwater. Ub
 
 ### How to Use
 run:
-`curl -fsSL https://raw.githubusercontent.com/Nolan-Rodriguez/Ubuntu-Fixer/refs/heads/main/Ubuntu-Fixer.sh | sh`
+```
+curl -fsSL https://raw.githubusercontent.com/Nolan-Rodriguez/Ubuntu-Fixer/refs/heads/main/Ubuntu-Fixer.sh | sh
+```
