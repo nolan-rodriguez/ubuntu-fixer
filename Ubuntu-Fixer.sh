@@ -28,7 +28,15 @@ done
 
 # Upgrade System
 echo 'Upgrading System...'
-sudo apt update -y && sudo apt upgrade -y
+installed_snaps=$(sudo apt update -y && sudo apt upgrade -y)
+
+# Remove Snap Apps
+echo 'Removing Snap applications...'
+snap list | awk 'NR>1 {print $1}'
+if [ -z "snap_list" ]; then
+echo 'No Snap applications installed.'
+for snap_app in installed_snaps; do
+sudo snap remove "$snap_app"
 
 # Remove Snap
 echo 'Removing Snap...'
@@ -46,6 +54,8 @@ echo 'Installing Flatpak'
 sudo apt install flatpak -y
 sudo apt install gnome-software-plugin-flatpak -y
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+# Upgrade System... Again
 
 # Ask if the User wants to Reboot now or later
 while true; do
