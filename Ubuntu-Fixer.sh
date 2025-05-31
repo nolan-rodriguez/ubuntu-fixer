@@ -31,13 +31,21 @@ echo 'Upgrading System...'
 
 # Removing Snap Applications
 echo 'Removing Snap applications...'
-installed_snaps=$(snap list | awk 'NR>1 {print $1}')
-if [ -z "$installed_snaps" ]; then
+# Remove all user/application snaps (excluding bases and themes)
+for snap in $(snap list | awk 'NR>1 {print $1}' | grep -Ev '^(core|core18|core20|core22|bare|snapd|gtk-common-themes)$'); do
+    sudo snap remove "$snap"
+done
+# Remove gtk-common-themes if present
+if snap list | grep -q gtk-common-themes; then
+    sudo snap remove gtk-common-themes
+fi
+# Remove base snaps if present
+for snap in $(snap list | awk 'NR>1 {print $1}' | grep -E '^(core|core18|core20|core22|bare|snapd)$'); do
+    sudo snap remove "$snap"
+done
+# If no snaps left, print message
+if [ "$(snap list | wc -l)" -le 1 ]; then
     echo 'No Snap applications installed.'
-else
-    for snap_app in $installed_snaps; do
-    sudo snap remove "$snap_app"
-    done
 fi
 
 # Remove Snap
