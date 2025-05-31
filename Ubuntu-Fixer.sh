@@ -26,28 +26,36 @@ while true; do
     fi
 done
 
+
 # Upgrade System
 echo 'Upgrading System...'
-installed_snaps=$(sudo apt update -y && sudo apt upgrade -y)
 
-# Remove Snap Apps
+
+# Removing Snap Applications
 echo 'Removing Snap applications...'
-snap list | awk 'NR>1 {print $1}'
-if [ -z "snap_list" ]; then
-echo 'No Snap applications installed.'
-for snap_app in installed_snaps; do
-sudo snap remove "$snap_app"
+installed_snaps=$(snap list | awk 'NR>1 {print $1}')
+if [ -z "$installed_snaps" ]; then
+    echo 'No Snap applications installed.'
+else
+    for snap_app in $installed_snaps; do
+    sudo snap remove "$snap_app"
+    done
+fi
+
 
 # Remove Snap
 echo 'Removing Snap...'
 sudo apt remove --purge snap snapd snap-store -y
 
+
 # Add nosnap.pref File to /etc/apt/preferences.d
 echo -e 'Package: snapd\nPin: release a=*\nPin-Priority: -10' | sudo tee /etc/apt/preferences.d/nosnap.pref > /dev/null
+
 
 # Install Gnome Software
 echo 'Installing Gnome Software'
 sudo apt install gnome-software -y
+
 
 # Install Flatpak
 echo 'Installing Flatpak'
@@ -55,7 +63,9 @@ sudo apt install flatpak -y
 sudo apt install gnome-software-plugin-flatpak -y
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
+
 # Upgrade System... Again
+sudo apt update && sudo apt upgrade
 
 # Ask if the User wants to Reboot now or later
 while true; do
