@@ -36,13 +36,13 @@ echo 'Removing Snap applications...'
 while true; do
     # List snaps and remove them one by one
     for snap in $(snap list | awk 'NR>1 {print $1}'); do
-        echo "Removing snap: $snap"
-        sudo snap remove "$snap"
+        echo "Removing $snap..."
+        sudo snap remove "$snap" || true
     done
 
     # Check if there are any snaps left
     if [ -z "$(snap list | awk 'NR>1 {print $1}')" ]; then
-        echo "No snaps remaining."
+        echo "All Snaps have been successfully removed."
         break
     fi
 done
@@ -55,16 +55,21 @@ sudo apt remove --purge snap snapd -y
 echo -e 'Package: snapd\nPin: release a=*\nPin-Priority: -10' | sudo tee /etc/apt/preferences.d/nosnap.pref > /dev/null
 
 # Install Flatpak
-echo 'Installing Flatpak'
+echo 'Installing Flatpak...'
 sudo apt install flatpak -y
+echo 'Installing Flatpak Backend for KDE Discover...'
 sudo apt install plasma-discover-backend-flatpak -y
+echo 'Installing Flatpak Permissions Managment...'
 sudo apt install kde-config-flatpak
+echo 'Adding Flathub remote...'
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # Upgrade System... Again
+echo 'Upgrading System...'
 sudo apt update -y && sudo apt upgrade -y
 
 # Autoremove Packages
+echo 'Removing unnecessary packages...'
 sudo apt autoremove -y
 
 # Ask if the User wants to Reboot now or later
