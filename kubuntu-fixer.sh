@@ -52,6 +52,7 @@ echo 'Removing Snap...'
 sudo apt remove --purge snap snapd -y
 
 # Add nosnap.pref File to /etc/apt/preferences.d
+echo 'Blocking Snap...'
 echo -e 'Package: snapd\nPin: release a=*\nPin-Priority: -10' | sudo tee /etc/apt/preferences.d/nosnap.pref > /dev/null
 
 # Install Flatpak

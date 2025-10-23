@@ -33,43 +33,42 @@ sudo apt update -y && sudo apt upgrade -y
 # Removing Snap Applications
 echo 'Removing Snap applications...'
 # Remove all user/application snaps (excluding bases and themes)
-for snap in $(snap list | awk 'NR>1 {print $1}' | grep -Ev '^(core[0-9]*|bare|snapd|gtk-common-themes)$'); do
-    sudo snap remove "$snap"
+while true; do
+    # List snaps and remove them one by one
+    for snap in $(snap list | awk 'NR>1 {print $1}'); do
+        echo "Removing $snap..."
+        sudo snap remove "$snap" || true
+    done
+
+    # Check if there are any snaps left
+    if [ -z "$(snap list | awk 'NR>1 {print $1}')" ]; then
+        echo "All Snaps have been successfully removed."
+        break
+    fi
 done
-# Remove gtk-common-themes if present
-if snap list | grep -q gtk-common-themes; then
-    sudo snap remove gtk-common-themes
-fi
-# Remove base snaps if present
-for snap in $(snap list | awk 'NR>1 {print $1}' | grep -E '^(core[0-9]*|bare|snapd)$'); do
-    sudo snap remove "$snap"
-done
-# If no snaps left, print message
-if [ "$(snap list | wc -l)" -le 1 ]; then
-    echo 'No Snap applications installed.'
-fi
 
 # Remove Snap
 echo 'Removing Snap...'
 sudo apt remove --purge snap snapd -y
 
 # Add nosnap.pref File to /etc/apt/preferences.d
+echo 'Blocking Snap...'
 echo -e 'Package: snapd\nPin: release a=*\nPin-Priority: -10' | sudo tee /etc/apt/preferences.d/nosnap.pref > /dev/null
 
-# Install Gnome Software
+# Install Flatpak
 echo 'Installing Gnome Software'
 sudo apt install gnome-software -y
-
-# Install Flatpak
 echo 'Installing Flatpak'
 sudo apt install flatpak -y
 sudo apt install gnome-software-plugin-flatpak -y
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # Upgrade System... Again
+echo 'Upgrading system...'
 sudo apt update -y && sudo apt upgrade -y
 
 # Autoremove Packages
+echo 'Removing unnecessary packages...'
 sudo apt autoremove -y
 
 # Ask if the User wants to Reboot now or later
